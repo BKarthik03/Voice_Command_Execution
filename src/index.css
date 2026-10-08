@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+
+/* ---------- 1. THEME TOKENS (plain CSS variables) ----------
+   Changing data-theme on <html> swaps every value below. */
+:root,
+[data-theme='dark'] {
+  --bg: #0b0f1a; --panel: #131a2b; --text: #e6ecff; --muted: #8a96b8;
+  --accent: #4da3ff; --accent2: #9b6bff; --border: #243050; --danger: #ff5c7a;
+  --glow: 0 0 24px rgba(77, 163, 255, 0.25);
+}
+[data-theme='light'] {
+  --bg: #eef2fa; --panel: #ffffff; --text: #16203a; --muted: #5d6a8a;
+  --accent: #1f6feb; --accent2: #7a4dff; --border: #d3dbee; --danger: #d6304f;
+  --glow: 0 4px 18px rgba(31, 111, 235, 0.15);
+}
+[data-theme='cyberpunk'] {
+  --bg: #000000; --panel: #04100a; --text: #39ff88; --muted: #1fa65a;
+  --accent: #00ffd5; --accent2: #39ff14; --border: #0c4a2a; --danger: #ff2a6d;
+  --glow: 0 0 26px rgba(0, 255, 140, 0.35);
+}
+
+/* ---------- 2. TELL TAILWIND ABOUT OUR TOKENS ----------
+   Now we can write bg-panel, text-accent, border-line, ... */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent2: var(--accent2);
+  --color-line: var(--border);
+  --color-danger: var(--danger);
+}
+
+/* Custom animations -> become classes: animate-pulse-ring, animate-breathe */
+@theme {
+  --animate-pulse-ring: pulse-ring 1.2s infinite;
+  --animate-breathe: breathe 1.6s ease-in-out infinite;
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 var(--accent2); }
+    100% { box-shadow: 0 0 0 36px transparent; }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+}
+
+/* Our own one-line utility: class="glow" */
+@utility glow {
+  box-shadow: var(--glow);
+}
+
+/* ---------- 3. BASE + REUSABLE COMPONENT CLASSES ---------- */
+@layer base {
+  body { @apply bg-bg text-ink antialiased transition-colors duration-500; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+  [data-theme='cyberpunk'] body { font-family: 'Courier New', monospace; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+}
+
+@layer components {
+  /* Used by every widget - written once instead of 5 times */
+  .card { @apply rounded-2xl border border-line bg-panel p-5 glow transition-colors duration-500; }
+  .card-title { @apply mb-3 text-sm font-semibold uppercase tracking-widest; }
+  .btn { @apply rounded-lg border border-line px-3 py-1 text-sm capitalize transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40; }
+}
